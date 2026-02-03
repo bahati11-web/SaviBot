@@ -1,6 +1,7 @@
 # SaviBot
 ![SAVI+](https://img.shields.io/badge/SAVI%2B-SAVIBOT%201.0-blue?style=for-the-badge&logo=appveyor)
 ![Python](https://img.shields.io/badge/Python-3.3%2B-yellow?style=for-the-badge&logo=python)
+[![JavaScript](https://img.shields.io/badge/JavaScript-MediaWiki-yellow?style=for-the-badge&logo=javascript&logoColor=black)](https://www.mediawiki.org/wiki/MediaWiki)
 ![Pywikibot](https://img.shields.io/badge/Pywikibot-LATEST-lightgrey?style=for-the-badge&logo=python)
 ![Mw-client](https://img.shields.io/badge/Mw--client-LATEST-brightgreen?style=for-the-badge&logo=mediawiki)
 [![Licence MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
