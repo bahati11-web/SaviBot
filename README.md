@@ -5,7 +5,7 @@
 ![Pywikibot](https://img.shields.io/badge/Pywikibot-LATEST-lightgrey?style=for-the-badge&logo=python)  
 ![Mw-client](https://img.shields.io/badge/Mw--client-LATEST-brightgreen?style=for-the-badge&logo=mediawiki)  
 [![Licence MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
->**SaviBot** est un bot **MediaWiki** hébergé chez [Savi+](https://saviplus-fr.systeme.io/accueil). Il est développé en Python avec Pywikibot et en JavaScript avec mw-client.
+>**SaviBot** est un bot **MediaWiki** hébergé chez [Savi+](https://saviplus-fr.systeme.io/accueil). Il est développé en Python avec Pywikibot et en JavaScript.
 >Conçu pour assister la maintenance, la patrouille et l’amélioration automatique des projets wiki (notamment Vikidia).
 # Fonctionnalités principales
 - Gestion des portails
