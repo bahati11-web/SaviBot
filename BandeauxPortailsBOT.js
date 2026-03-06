@@ -1,11 +1,25 @@
 /*
-╔════════════════════════╗
-║  BandeauxPortailsBOT   ║
-╚════════════════════════╝
+╔══════════════════════════════╗
+║     BandeauxPortailsBOT      ║
+╚══════════════════════════════╝
+
+Version      : 2.0
+Statut       : Stable
+
+Description :
+Ce script permet d'ajouter automatiquement des bandeaux de
+portails aux articles appartenant à une catégorie donnée.
+Il analyse les pages de la catégorie et insère le portail
+correspondant si celui-ci n'est pas déjà présent.
+
+Note :
+Le comportement peut varier selon la configuration
+et les modèles utilisés sur d'autres wikis.
+
+Conseil :
+Toujours tester le script sur quelques pages avant
+de lancer une modification à grande échelle.
 */
-// Version 2.0     
-// Script pour ajouter des portails depuis une catégorie avec son Bot      
-// Testé pour Vikidia, soyez prudent sur les autres wikis      
       
 // <nowiki>      
 (function () {
