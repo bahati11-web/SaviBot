@@ -1,6 +1,6 @@
 # SaviBot
 
-**SaviBot** est un bot développé pour les projets **MediaWiki** afin d’automatiser certaines tâches de maintenance et d’amélioration des contenus.
+**SaviBot** est un bot multi-fonctions développé pour les projets **MediaWiki** afin d’automatiser certaines tâches de maintenance et d’amélioration des contenus.
 Le bot est hébergé chez **[Savi+](https://saviplus-fr.systeme.io/accueil)** et développé principalement en **Python** avec **Pywikibot**, ainsi qu’en **JavaScript** pour certains scripts spécifiques.
 
 ## Objectif
