@@ -125,7 +125,7 @@ def process_page(title: str) -> bool:
     summary = f"Bot: Ajout de [[simple:{simple_title}]] depuis [[w:{wp_title}]]"
 
     try:
-        page.put(newtext, summary=summary, minor=True)
+        page.put(newtext, summary=summary, minor=True, botflag=True)
         log("   -> OK (page enregistrée)")
         return True
 
