@@ -1,5 +1,6 @@
 import time
 import re
+import logging
 import pywikibot
 from collections import deque
 
@@ -22,7 +23,25 @@ SIMPLE_IW_RE = re.compile(
     re.I
 )
 
-def log(msg: str):
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[
+        logging.FileHandler("frvd-interwiki-simple.log"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger("frvd-interwiki-simple")
+
+def log(msg: str, level="info"):
+    if level == "info":
+        logger.info(msg)
+    elif level == "warning":
+        logger.warning(msg)
+    elif level == "error":
+        logger.error(msg)
+
     pywikibot.output(msg)
 
 def should_ignore(text: str) -> str | None:
