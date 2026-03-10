@@ -22,5 +22,5 @@ Les principales fonctions du bot incluent :
 - **JavaScript**
 - **MediaWiki API**
 
-## Contact
-**Email :** spambahati11@gmail.com
+## Contact 
+**Bahati11 :** spambahati11@gmail.com
