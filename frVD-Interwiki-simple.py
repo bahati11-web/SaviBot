@@ -27,7 +27,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
     handlers=[
-        logging.FileHandler("frvd-interwiki-simple.log"),
+        logging.FileHandler("frVD-interwiki-simple.log"),
         logging.StreamHandler()
     ]
 )
