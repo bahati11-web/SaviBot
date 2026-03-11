@@ -189,11 +189,6 @@ def main():
                     continue
                 seen.append(title)
 
-                if process_page(title):
-                    did_edit = True
-                    log("   -> Pause 60s (délai demandé)")
-                    time.sleep(60)
-
             if last_ts:
                 start = last_ts
 
