@@ -1,7 +1,6 @@
-import time
 import re
-import logging
 import pywikibot
+from datetime import datetime
 from collections import deque
 
 VIKIDIA_SITE = pywikibot.Site("fr", "vikidia")
@@ -13,48 +12,19 @@ IGNORE_TEMPLATES = [
     r"\{\{\s*Travaux",
 ]
 
-WP_IW_RE = re.compile(
-    r"\[\[\s*(wp|w)\s*:\s*([^\]\|\n]+)(?:\|[^\]]*)?\s*\]\]",
-    re.I
-)
+WP_IW_RE = re.compile(r"\[\[\s*(wp|w)\s*:\s*([^\]\|\n]+)(?:\|[^\]]*)?\s*\]\]", re.I)
+SIMPLE_IW_RE = re.compile(r"\[\[\s*simple\s*:\s*([^\]\|\n]+)(?:\|[^\]]*)?\s*\]\]", re.I)
 
-SIMPLE_IW_RE = re.compile(
-    r"\[\[\s*simple\s*:\s*([^\]\|\n]+)(?:\|[^\]]*)?\s*\]\]",
-    re.I
-)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    handlers=[
-        logging.FileHandler("frVD-interwiki-simple.log"),
-        logging.StreamHandler()
-    ]
-)
-
-logger = logging.getLogger("frvd-interwiki-simple")
-
-def log(msg: str, level="info"):
-    if level == "info":
-        logger.info(msg)
-    elif level == "warning":
-        logger.warning(msg)
-    elif level == "error":
-        logger.error(msg)
-
+def log(msg: str):
     pywikibot.output(msg)
 
 def should_ignore(text: str) -> str | None:
-
     low = text.lower().lstrip()
-
     if low.startswith("#redirect") or low.startswith("#redirection"):
         return "Page = redirection"
-
     for pattern in IGNORE_TEMPLATES:
         if re.search(pattern, text, flags=re.I):
-            return "Modèle ignoré détecté (VikiConcours/Travaux)"
-
+            return "Modèle ignoré détecté"
     return None
 
 def find_wp_target(text: str):
@@ -66,140 +36,97 @@ def find_wp_target(text: str):
 def get_simple_from_wp(wp_title: str):
     try:
         wp_page = pywikibot.Page(WP_SITE, wp_title)
-
         if not wp_page.exists():
             return None
-
         for iw in wp_page.langlinks():
             if iw.site == SIMPLE_SITE:
                 return iw.title
-
     except Exception as e:
-        log(f"   [ERREUR] Wikipédia: {e}")
+        log(f"[ERREUR] Wikipédia: {e}")
         return None
-
     return None
 
 def insert_simple_under_wp(text: str, simple_title: str) -> str:
     if SIMPLE_IW_RE.search(text):
         return text
-
     lines = text.splitlines()
-
     for i, line in enumerate(lines):
         if WP_IW_RE.search(line):
             lines.insert(i + 1, f"[[simple:{simple_title}]]")
             return "\n".join(lines)
-
     return text
 
 def process_page(title: str) -> bool:
-
     log(f"Traitement... {title}")
-
     page = pywikibot.Page(VIKIDIA_SITE, title)
-
-    if page.namespace() != 0:
-        log("   -> Ignoré (pas dans l'espace principal)")
+    if page.namespace() != 0 or not page.exists():
         return False
-
-    if not page.exists():
-        log("   -> Ignoré (page inexistante)")
-        return False
-
     try:
         text = page.get()
     except Exception as e:
-        log(f"   -> Ignoré (impossible de lire la page: {e})")
+        log(f"Impossible de lire la page: {e}")
         return False
-
-    reason = should_ignore(text)
-    if reason:
-        log(f"   -> Ignoré ({reason})")
+    if reason := should_ignore(text):
+        log(f"Ignoré ({reason})")
         return False
-
     wp_title = find_wp_target(text)
-    if not wp_title:
-        log("   -> Ignoré (pas de [[wp:...]] ou [[w:...]])")
+    if not wp_title or SIMPLE_IW_RE.search(text):
         return False
-
-    if SIMPLE_IW_RE.search(text):
-        log("   -> Ignoré (interwiki simple déjà présent)")
-        return False
-
-    log(f"   -> Interwiki Wikipédia trouvé : {wp_title}")
-
+    log(f"Interwiki Wikipédia trouvé : {wp_title}")
     simple_title = get_simple_from_wp(wp_title)
     if not simple_title:
-        log("   -> Ignoré (pas d’interwiki simple trouvé sur Wikipédia)")
+        log("Pas d’interwiki simple trouvé sur Wikipédia")
         return False
-
-    log(f"   -> Interwiki simple trouvé : {simple_title}")
-
     newtext = insert_simple_under_wp(text, simple_title)
     if newtext == text:
-        log("   -> Ignoré (aucun changement à faire)")
         return False
-
     summary = f"Bot: Ajout de [[simple:{simple_title}]] depuis [[w:{wp_title}]]"
-
     try:
-        page.put(newtext, summary=summary, minor=True, botflag=True)
-        log("   -> OK (page enregistrée)")
+        page.put(newtext, summary=summary, minor=True, bot=True)
+        log("Page enregistrée")
         return True
-
     except Exception as e:
-        log(f"   -> ERREUR (impossible de sauvegarder: {e})")
+        log(f"Impossible de sauvegarder: {e}")
         return False
 
 def main():
-    log("=== Bot : ajout interwiki simple depuis wp ===")
+    log("=== Bot : Ajout de l'interwiki simple ===")
+    today = datetime.utcnow().date()
+    start = pywikibot.Timestamp(today.year, today.month, today.day, 0, 0, 0)
 
-    start = pywikibot.Timestamp.utcnow()
+    seen = set()
+    to_process = []
 
-    seen = deque(maxlen=400)
+    rcgen = VIKIDIA_SITE.recentchanges(
+        start=start,
+        namespaces=[0],
+        changetype="edit",
+        reverse=True,
+        total=500
+    )
 
     while True:
-        try:
-            log("Recup de modif")
+        batch = list(rcgen)
+        if not batch:
+            break
+        for rc in batch:
+            title = rc.get("title")
+            if title and title not in seen:
+                seen.add(title)
+                to_process.append(title)
+        last_rc = batch[-1]
+        last_ts = last_rc.get("timestamp")
+        rcgen = VIKIDIA_SITE.recentchanges(
+            start=last_ts,
+            namespaces=[0],
+            changetype="edit",
+            reverse=True,
+            total=500
+        )
 
-            rcgen = VIKIDIA_SITE.recentchanges(
-                start=start,
-                namespaces=[0],
-                changetype="edit",
-                reverse=True,
-                total=100
-            )
-
-            last_ts = None
-            did_edit = False
-            count = 0
-
-            for rc in rcgen:
-                title = rc.get("title")
-                if not title:
-                    continue
-
-                count += 1
-                last_ts = rc.get("timestamp")
-
-                if title in seen:
-                    log(f"Traitement... {title}")
-                    log("   -> Ignoré (déjà vu récemment)")
-                    continue
-                seen.append(title)
-
-            if last_ts:
-                start = last_ts
-
-            if count == 0:
-                log("   -> Aucune modification nouvelle")
-                time.sleep(10)
-
-        except Exception as e:
-            log(f"[ERREUR BOUCLE] {e}")
-            time.sleep(30)
-
+    log(f"{len(to_process)} pages à traiter")
+    for title in to_process:
+        process_page(title)
 
 if __name__ == "__main__":
     main()
