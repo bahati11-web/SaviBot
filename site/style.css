@@ -1,0 +1,74 @@
+{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #4b0082, #2e004b);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.background {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('https://images.unsplash.com/photo-1612831662101-7a03a5a8c2b4?auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover;
+  filter: blur(12px) brightness(0.5);
+  z-index: -1;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 2rem;
+  margin: 1rem 0;
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 800px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.37);
+}
+
+header h1 {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+header p {
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  padding-bottom: 0.5rem;
+}
+
+ul {
+  padding-left: 1.5rem;
+  list-style: disc;
+}
+
+a {
+  color: #ffcc00;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
