@@ -8,7 +8,7 @@ warnings.filterwarnings("ignore")
 site = pywikibot.Site("fr", "vikidia")
 site.login()
 now = datetime.now(timezone.utc)
-today_str = now.strftime("%Y-%m-%d")  # date du jour UTC
+today_str = now.strftime("%Y-%m-%d") 
 
 changes = site.recentchanges(
     namespaces=[0],
@@ -17,7 +17,6 @@ changes = site.recentchanges(
 
 pages_set = set()
 for change in changes:
-    # conversion timestamp en datetime UTC
     rc_time = datetime.fromisoformat(change["timestamp"])
     if rc_time.strftime("%Y-%m-%d") == today_str:
         pages_set.add(change["title"])
