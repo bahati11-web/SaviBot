@@ -17,54 +17,120 @@ cache_qid = {}
 def similarite(a, b):
     return SequenceMatcher(None, a.lower(), b.lower()).ratio()
 
+
 def est_homonymie(page):
+
     text = page.text.lower()
 
     if "homonymie" in text:
-        logging.info(f"{page.title()} ignoré : homonymie texte")
         return True
 
     try:
         for cat in page.categories():
             if "homonymie" in cat.title().lower():
-                logging.info(f"{page.title()} ignoré : catégorie homonymie")
                 return True
-    except Exception as e:
-        logging.warning(f"Erreur catégories {page.title()} : {e}")
+    except:
+        pass
 
     return False
 
 
-def qid_depuis_wiki(titre, wiki):
+def chercher_qid_sitelinks(titre):
 
     url = "https://www.wikidata.org/w/api.php"
 
-    params = {
-        "action": "wbgetentities",
-        "sites": wiki,
-        "titles": titre,
-        "format": "json"
-    }
+    for wiki in ["frwiki","enwiki","dewiki"]:
 
-    try:
-        data = requests.get(url, params=params).json()
+        params = {
+            "action":"wbgetentities",
+            "sites":wiki,
+            "titles":titre,
+            "format":"json"
+        }
 
-        for qid, v in data.get("entities", {}).items():
-            if qid != "-1":
-                logging.info(f"{titre} → QID trouvé via {wiki} : {qid}")
-                return qid
-    except Exception as e:
-        logging.warning(f"Erreur API {wiki} : {e}")
+        try:
+            data = requests.get(url,params=params).json()
+
+            for qid,v in data.get("entities",{}).items():
+                if qid != "-1":
+                    return qid
+
+        except:
+            pass
 
     return None
 
 
-def chercher_qid_sitelinks(titre):
+def chercher_qid_sparql(titre):
 
-    for wiki in ["frwiki", "enwiki", "dewiki"]:
-        qid = qid_depuis_wiki(titre, wiki)
-        if qid:
-            return qid
+    query = f"""
+    SELECT ?item WHERE {{
+      ?item rdfs:label "{titre}"@fr .
+      ?item wdt:P31 ?type .
+
+      FILTER(?type NOT IN (
+        wd:Q4167410,
+        wd:Q13406463,
+        wd:Q11266439
+      ))
+    }}
+    LIMIT 5
+    """
+
+    url = "https://query.wikidata.org/sparql"
+
+    try:
+
+        r = requests.get(
+            url,
+            params={"query":query,"format":"json"},
+            headers={"User-Agent":"BahatiBot"}
+        ).json()
+
+        for b in r["results"]["bindings"]:
+
+            uri = b["item"]["value"]
+            return uri.split("/")[-1]
+
+    except:
+        pass
+
+    return None
+
+
+def chercher_qid_alias(titre):
+
+    query = f"""
+    SELECT ?item WHERE {{
+      ?item skos:altLabel "{titre}"@fr .
+      ?item wdt:P31 ?type .
+
+      FILTER(?type NOT IN (
+        wd:Q4167410,
+        wd:Q13406463,
+        wd:Q11266439
+      ))
+    }}
+    LIMIT 5
+    """
+
+    url = "https://query.wikidata.org/sparql"
+
+    try:
+
+        r = requests.get(
+            url,
+            params={"query":query,"format":"json"},
+            headers={"User-Agent":"BahatiBot"}
+        ).json()
+
+        for b in r["results"]["bindings"]:
+
+            uri = b["item"]["value"]
+            return uri.split("/")[-1]
+
+    except:
+        pass
 
     return None
 
@@ -74,46 +140,37 @@ def chercher_qid_score(titre, contenu):
     url = "https://www.wikidata.org/w/api.php"
 
     params = {
-        "action": "wbsearchentities",
-        "search": titre,
-        "language": "fr",
-        "uselang": "fr",
-        "limit": 10,
-        "format": "json"
+        "action":"wbsearchentities",
+        "search":titre,
+        "language":"fr",
+        "limit":10,
+        "format":"json"
     }
 
     try:
-        data = requests.get(url, params=params).json()
-    except Exception as e:
-        logging.error(f"Erreur requête Wikidata : {e}")
+        data = requests.get(url,params=params).json()
+    except:
         return None
 
     meilleur_qid = None
     meilleur_score = 0
 
-    for r in data.get("search", []):
+    for r in data.get("search",[]):
 
         label = r["label"]
-        description = r.get("description", "")
+        description = r.get("description","")
 
         if "homonymie" in description.lower():
             continue
 
-        score_titre = similarite(titre, label)
-        score_desc = similarite(contenu[:400], description)
+        score_titre = similarite(titre,label)
+        score_desc = similarite(contenu[:400],description)
 
-        score_total = (score_titre * 0.8) + (score_desc * 0.2)
+        score_total = (score_titre*0.8)+(score_desc*0.2)
 
-        logging.info(
-            f"Candidat {r['id']} | label={label} | score_titre={score_titre:.4f} | score_desc={score_desc:.4f} | score_total={score_total:.4f}"
-        )
-
-        if score_titre >= 0.999 and score_total > meilleur_score:
+        if score_titre >= 0.92 and score_total > meilleur_score:
             meilleur_score = score_total
             meilleur_qid = r["id"]
-
-    if meilleur_qid:
-        logging.info(f"QID sélectionné par score : {meilleur_qid}")
 
     return meilleur_qid
 
@@ -121,20 +178,20 @@ def chercher_qid_score(titre, contenu):
 def qid_deja_lie(qid):
 
     try:
-        item = pywikibot.ItemPage(repo, qid)
+
+        item = pywikibot.ItemPage(repo,qid)
         item.get()
 
         if item.sitelinks and "frvikidia" in item.sitelinks:
-            logging.info(f"{qid} ignoré : déjà lié frvikidia")
             return True
 
-        return False
+    except:
+        pass
 
-    except Exception as e:
-        logging.warning(f"Erreur sitelinks {qid} : {e}")
-        return False
+    return False
 
-def inserer_modele(text, qid):
+
+def inserer_modele(text,qid):
 
     modele = "{{Élément Wikidata|" + qid + "}}"
 
@@ -143,25 +200,26 @@ def inserer_modele(text, qid):
 
     pattern = r"(\{\{[Pp]ortail.*?\}\}|\[\[Catégorie:.*?\]\])"
 
-    match = re.search(pattern, text)
+    match = re.search(pattern,text)
 
     if match:
         pos = match.start()
-        logging.info("Insertion avant portail/catégorie")
         return text[:pos] + modele + "\n" + text[pos:]
 
-    logging.info("Insertion fin de page")
     return text + "\n\n" + modele
 
 
-for page in site.randompages(total=100, namespaces=0):
+for page in site.randompages(total=100,namespaces=0):
 
     titre = page.title()
 
-    logging.info(f"Analyse page : {titre}")
-
     if page.isRedirectPage():
-        logging.info("Ignoré : redirection")
+        continue
+
+    if page.isDisambig():
+        continue
+
+    if re.match(r"^\d{3,4}$",titre):
         continue
 
     if est_homonymie(page):
@@ -170,42 +228,46 @@ for page in site.randompages(total=100, namespaces=0):
     text = page.text
 
     if "{{Élément Wikidata" in text:
-        logging.info("Ignoré : modèle déjà présent")
         continue
 
     if titre in cache_qid:
         qid = cache_qid[titre]
-        logging.info(f"QID depuis cache : {qid}")
+
     else:
 
         qid = chercher_qid_sitelinks(titre)
 
         if not qid:
-            qid = chercher_qid_score(titre, text)
+            qid = chercher_qid_sparql(titre)
+
+        if not qid:
+            qid = chercher_qid_alias(titre)
+
+        if not qid:
+            qid = chercher_qid_score(titre,text)
 
         cache_qid[titre] = qid
 
     if not qid:
-        logging.info("Aucun QID trouvé")
         continue
 
     if qid_deja_lie(qid):
         continue
 
-    nouveau = inserer_modele(text, qid)
+    nouveau = inserer_modele(text,qid)
 
     if nouveau != text:
 
         page.text = nouveau
 
         try:
+
             page.save(
                 summary=f"Bot: Ajout de {{Élément Wikidata|{qid}}}",
                 minor=True,
                 bot=True
             )
 
-            logging.info(f"Modification enregistrée : {titre}")
-
         except Exception as e:
-            logging.error(f"Erreur sauvegarde {titre} : {e}")
+
+            logging.error(e)
