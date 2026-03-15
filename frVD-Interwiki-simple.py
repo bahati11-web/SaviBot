@@ -1,70 +1,66 @@
 import pywikibot
 import re
-from datetime import datetime, timezone
-import warnings
-
-warnings.filterwarnings("ignore")
+import time
 
 site = pywikibot.Site("fr", "vikidia")
 site.login()
-now = datetime.now(timezone.utc)
-today_str = now.strftime("%Y-%m-%d") 
-
-changes = site.recentchanges(
-    namespaces=[0],
-    changetype="edit"
-)
-
-pages_set = set()
-for change in changes:
-    rc_time = datetime.fromisoformat(change["timestamp"])
-    if rc_time.strftime("%Y-%m-%d") == today_str:
-        pages_set.add(change["title"])
-
-print(f"Nombre de pages réellement modifiées aujourd'hui : {len(pages_set)}")
 
 wp_site = pywikibot.Site("fr", "wikipedia")
 
-for title in pages_set:
-    page = pywikibot.Page(site, title)
-    try:
-        if page.isRedirectPage():
-            continue
+MAX_MODIFIED = 100
+modified_count = 0
+BATCH_SIZE = 50 
 
-        text = page.text
-        if "{{Travaux" in text or "[[simple:" in text:
-            continue
+while modified_count < MAX_MODIFIED:
+    random_pages = site.randompages(total=BATCH_SIZE, namespaces=[0])
 
-        match = re.search(r"\[\[wp:(.*?)\]\]", text)
-        if not match:
-            continue
+    for page in random_pages:
+        if modified_count >= MAX_MODIFIED:
+            break
 
-        wp_title = match.group(1).strip()
-        wp_page = pywikibot.Page(wp_site, wp_title)
-        if not wp_page.exists():
-            continue
+        try:
+            if page.isRedirectPage():
+                continue
 
-        simple_title = None
-        for lang in wp_page.langlinks():
-            if lang.site.code == "simple":
-                simple_title = lang.title
-                break
-        if not simple_title:
-            continue
+            text = page.text
+            if "{{travaux" in text.lower() or "[[simple:" in text.lower() or "{{homonymie" in text.lower():
+                continue
 
-        simple_link = f"[[simple:{simple_title}]]"
-        wp_link = f"[[wp:{wp_title}]]"
+            match = re.search(r"\[\[wp:(.*?)\]\]", text)
+            if not match:
+                continue
 
-        if simple_link in text:
-            continue
+            wp_title = match.group(1).strip()
+            wp_page = pywikibot.Page(wp_site, wp_title)
+            if not wp_page.exists():
+                continue
 
-        new_text = text.replace(wp_link, wp_link + "\n" + simple_link)
-        page.text = new_text
+            simple_title = None
+            for lang in wp_page.langlinks():
+                if lang.site.code == "simple":
+                    simple_title = lang.title
+                    break
+            if not simple_title:
+                continue
 
-        summary = f"Ajout de [[simple:{simple_title}]] depuis [[wp:{wp_title}]]"
-        page.save(summary=summary, minor=True, bot=True)
+            simple_link = f"[[simple:{simple_title}]]"
+            wp_link = f"[[wp:{wp_title}]]"
 
-        print("Ajout sur :", title)
+            if simple_link in text:
+                continue
 
-    except Exception as e:
-        print("Erreur sur", title, ":", e)
+            new_text = text.replace(wp_link, wp_link + "\n" + simple_link)
+            page.text = new_text
+
+            page.save(summary=f"Ajout de [[simple:{simple_title}]] depuis [[wp:{wp_title}]]",
+                      minor=True, bot=True)
+
+            modified_count += 1
+            print(f"Ajout sur : {page.title()} ({modified_count}/{MAX_MODIFIED})")
+
+            time.sleep(0.5)
+
+        except Exception as e:
+            print("Erreur sur", page.title(), ":", e)
+            
+    time.sleep(1)
