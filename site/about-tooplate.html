@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Tooplate - Free HTML CSS Templates</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1a;
+            color: #d0d0d0;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #d0d0d0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* HEADER */
+        header {
+            background-color: #121212;
+            border-bottom: 1px solid #2a2a2a;
+            padding: 30px 40px;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .back-link {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #222;
+            font-weight: 600;
+            font-size: 14px;
+            border-left: 2px solid #555;
+            border-bottom: 2px solid #555;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(0 0, 90% 0, 100% 100%, 0 100%);
+        }
+
+        .back-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background-color: #444;
+            transition: height 0.3s ease;
+            z-index: -1;
+        }
+
+        .back-link:hover::before {
+            height: 20%;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 80px 40px;
+            background-color: #1a1a1a;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #999;
+            max-width: 600px;
+            margin: 0 auto 50px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: #d0d0d0;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ABOUT SECTION */
+        .about {
+            padding: 80px 40px;
+            background-color: #121212;
+        }
+
+        .about-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .about-text p {
+            color: #999;
+            margin-bottom: 20px;
+            font-size: 15px;
+            line-height: 1.9;
+        }
+
+        .about-text a {
+            color: #d0d0d0;
+            text-decoration: underline;
+        }
+
+        .about-text a:hover {
+            color: white;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .feature {
+            padding: 24px;
+            background-color: #1a1a1a;
+            border-left: 3px solid #555;
+        }
+
+        .feature h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .feature p {
+            font-size: 13px;
+            color: #777;
+            margin: 0;
+        }
+
+        /* TEMPLATES SECTION */
+        .templates {
+            padding: 80px 40px;
+            background-color: #1a1a1a;
+        }
+
+        .templates-header {
+            max-width: 1200px;
+            margin: 0 auto 50px;
+            text-align: center;
+        }
+
+        .templates-header h2 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .templates-header p {
+            color: #999;
+            font-size: 16px;
+        }
+
+        .templates-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .template-card {
+            background-color: #222;
+            border: 1px solid #2a2a2a;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            border-color: #444;
+        }
+
+        .template-image {
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            background-color: #1a1a1a;
+        }
+
+        .template-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            transition: transform 0.5s ease;
+        }
+
+        .template-card:hover .template-image img {
+            transform: scale(1.05);
+        }
+
+        .template-info {
+            padding: 20px;
+        }
+
+        .template-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .template-info p {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .template-link {
+            font-size: 13px;
+            font-weight: 600;
+            color: #999;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s ease;
+        }
+
+        .template-link:hover {
+            color: white;
+        }
+
+        /* CTA SECTION */
+        .cta {
+            padding: 80px 40px;
+            background-color: #121212;
+            text-align: center;
+            border-top: 1px solid #2a2a2a;
+        }
+
+        .cta h2 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .cta p {
+            color: #999;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 16px 40px;
+            background-color: #333;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            border-left: 2px solid #555;
+            border-bottom: 2px solid #555;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(0 0, 90% 0, 100% 100%, 0 100%);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background-color: #444;
+            transition: height 0.3s ease;
+            z-index: -1;
+        }
+
+        .cta-button:hover::before {
+            height: 20%;
+        }
+
+        /* FOOTER */
+        footer {
+            background-color: #121212;
+            border-top: 1px solid #2a2a2a;
+            padding: 30px 40px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-copyright {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .footer-link {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .footer-link:hover {
+            color: #d0d0d0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .templates-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .hero {
+                padding: 60px 20px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .stats {
+                gap: 40px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .about {
+                padding: 60px 20px;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .templates {
+                padding: 60px 20px;
+            }
+
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta {
+                padding: 60px 20px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-content">
+            <div class="logo">Tooplate</div>
+            <a href="creative-studio-minimal-04.html" class="back-link">← Back to Template</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Free HTML CSS Templates</h1>
+            <p>Beautiful, responsive, and AI-customizable website templates for everyone.</p>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number">80+</span>
+                    <span class="stat-label">Templates</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">36K+</span>
+                    <span class="stat-label">Monthly Users</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">10+</span>
+                    <span class="stat-label">Years Online</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="about">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>About Tooplate</h2>
+                <p><a href="https://www.tooplate.com/" target="_blank" rel="nofollow">Tooplate</a> has been providing free HTML CSS website templates since 2010. Our mission is to help developers, designers, and businesses create beautiful websites without starting from scratch.</p>
+                <p>All our templates are now AI-ready, meaning you can easily customize them using AI tools like <a href="https://claude.ai/" target="_blank" rel="nofollow">Claude</a> or ChatGPT. Simply describe the changes you want, and let AI help you modify colors, content, layouts, and more.</p>
+                <p>Whether you're building a portfolio, business site, or creative project, our templates provide a solid foundation that's easy to customize and deploy.</p>
+            </div>
+            <div class="features">
+                <div class="feature">
+                    <h4>100% Free</h4>
+                    <p>All templates free to download and use for any project.</p>
+                </div>
+                <div class="feature">
+                    <h4>Responsive Design</h4>
+                    <p>Mobile-first approach ensures perfect display on all devices.</p>
+                </div>
+                <div class="feature">
+                    <h4>AI-Customizable</h4>
+                    <p>Easily modify with AI assistants for quick personalization.</p>
+                </div>
+                <div class="feature">
+                    <h4>Clean Code</h4>
+                    <p>Well-organized HTML and CSS that's easy to understand.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEMPLATES SECTION -->
+    <section class="templates">
+        <div class="templates-header">
+            <h2>Featured Templates</h2>
+            <p>Check out our latest additions for modern, responsive designs.</p>
+        </div>
+        <div class="templates-grid">
+            <article class="template-card">
+                <div class="template-image">
+                    <img src="https://www.tooplate.com/thumbnails/tooplate-2155-modern-musician.jpg" alt="Modern Musician Portfolio">
+                </div>
+                <div class="template-info">
+                    <h3>Modern Musician Portfolio</h3>
+                    <p>A clean, minimal template for music creators, educators, and freelance artists.</p>
+                    <a href="https://www.tooplate.com/view/2155-modern-musician" target="_blank" rel="nofollow" class="template-link">View Template →</a>
+                </div>
+            </article>
+            <article class="template-card">
+                <div class="template-image">
+                    <img src="https://www.tooplate.com/thumbnails/tooplate-2154-split-portfolio.jpg" alt="Split Screen Portfolio">
+                </div>
+                <div class="template-info">
+                    <h3>Split Screen Portfolio</h3>
+                    <p>A modern, fully responsive template with editorial magazine aesthetics.</p>
+                    <a href="https://www.tooplate.com/view/2154-split-portfolio" target="_blank" rel="nofollow" class="template-link">View Template →</a>
+                </div>
+            </article>
+            <article class="template-card">
+                <div class="template-image">
+                    <img src="https://www.tooplate.com/thumbnails/tooplate-2153-fireworks-composer.jpg" alt="Fireworks Composer">
+                </div>
+                <div class="template-info">
+                    <h3>Fireworks Composer</h3>
+                    <p>An interactive New Year celebration template with dazzling fireworks effects.</p>
+                    <a href="https://www.tooplate.com/view/2153-fireworks-composer" target="_blank" rel="nofollow" class="template-link">View Template →</a>
+                </div>
+            </article>
+            <article class="template-card">
+                <div class="template-image">
+                    <img src="https://www.tooplate.com/thumbnails/tooplate-2152-event-invitation.jpg" alt="Event Invitation">
+                </div>
+                <div class="template-info">
+                    <h3>Event Invitation</h3>
+                    <p>A modern, minimalist template for corporate events and professional gatherings.</p>
+                    <a href="https://www.tooplate.com/view/2152-event-invitation" target="_blank" rel="nofollow" class="template-link">View Template →</a>
+                </div>
+            </article>
+            <article class="template-card">
+                <div class="template-image">
+                    <img src="https://www.tooplate.com/thumbnails/tooplate-2151-winter-gallery.jpg" alt="Winter Gallery">
+                </div>
+                <div class="template-info">
+                    <h3>Winter Gallery</h3>
+                    <p>An elegant photography gallery with minimalist design and soft winter colors.</p>
+                    <a href="https://www.tooplate.com/view/2151-winter-gallery" target="_blank" rel="nofollow" class="template-link">View Template →</a>
+                </div>
+            </article>
+            <article class="template-card">
+                <div class="template-image">
+                    <img src="https://www.tooplate.com/thumbnails/tooplate-2150-living-parallax.jpg" alt="Living Parallax Gallery">
+                </div>
+                <div class="template-info">
+                    <h3>Living Parallax Gallery</h3>
+                    <p>A stunning fullscreen image gallery with interactive parallax effects.</p>
+                    <a href="https://www.tooplate.com/view/2150-living-parallax" target="_blank" rel="nofollow" class="template-link">View Template →</a>
+                </div>
+            </article>
+            <article class="template-card">
+                <div class="template-image">
+                    <img src="https://www.tooplate.com/thumbnails/tooplate-2149-strategic-consulting.jpg" alt="Strategic Consulting">
+                </div>
+                <div class="template-info">
+                    <h3>Strategic Consulting</h3>
+                    <p>A modern, professional template for consulting firms and business strategists.</p>
+                    <a href="https://www.tooplate.com/view/2149-strategic-consulting" target="_blank" rel="nofollow" class="template-link">View Template →</a>
+                </div>
+            </article>
+            <article class="template-card">
+                <div class="template-image">
+                    <img src="https://www.tooplate.com/thumbnails/tooplate-2148-bistro-elegance.jpg" alt="Bistro Elegance">
+                </div>
+                <div class="template-info">
+                    <h3>Bistro Elegance</h3>
+                    <p>A sophisticated fine dining restaurant template with elegant animated elements.</p>
+                    <a href="https://www.tooplate.com/view/2148-bistro-elegance" target="_blank" rel="nofollow" class="template-link">View Template →</a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta">
+        <h2>Ready to Build Your Website?</h2>
+        <p>Browse our full collection of free HTML CSS templates.</p>
+        <a href="https://www.tooplate.com/free-templates" target="_blank" rel="nofollow" class="cta-button">View All Templates</a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <p class="footer-copyright">© 2026 Tooplate</p>
+            <a href="https://www.tooplate.com/" target="_blank" rel="nofollow" class="footer-link">Free HTML Templates</a>
+        </div>
+    </footer>
+</body>
+</html>
