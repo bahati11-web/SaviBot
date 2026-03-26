@@ -1,1 +1,5 @@
 site/
+user-config.py
+user-password.py
+*.log
+apicache*
