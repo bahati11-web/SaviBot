@@ -4,3 +4,6 @@ user-password.py
 *.log
 apicache*
 *pycache*
+*.log
+venv/
+.env/
