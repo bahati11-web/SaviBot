@@ -1,7 +1,7 @@
 # SaviBot
 
 **SaviBot** est un bot multi-fonctions développé pour les projets **MediaWiki** afin d’automatiser certaines tâches de maintenance et d’amélioration des contenus.
-Le bot est hébergé chez **[Savi+](https://saviplus-fr.systeme.io/accueil)** et développé principalement en **Python** avec **Pywikibot**, ainsi qu’en **JavaScript** pour certains scripts spécifiques.
+Le bot est développé principalement en **Python** avec **Pywikibot**, ainsi qu’en **JavaScript** pour certains scripts spécifiques.
 
 ## Objectif
 SaviBot a pour objectif d'assister les contributeurs dans les tâches répétitives et techniques, afin d'améliorer la qualité et la cohérence des projets wiki.
@@ -23,4 +23,4 @@ Les principales fonctions du bot incluent :
 - **MediaWiki API**
 
 ## Contact 
-**Bahati11 :** spambahati11@gmail.com
+**Bahati11 :** spambahati11@gmail.com & bahati@lilo.org
