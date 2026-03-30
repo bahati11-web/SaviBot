@@ -23,4 +23,4 @@ Les principales fonctions du bot incluent :
 - **MediaWiki API**
 
 ## Contact 
-**Bahati11 :** spambahati11@gmail.com & bahati@lilo.org
+**Bahati11 :** spambahati11@gmail.com & bahati11@lilo.org
