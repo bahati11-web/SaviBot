@@ -8,7 +8,7 @@ site = pywikibot.Site("fr", "vikidia")
 def pre_clean(text):
     text = re.sub(r'^(==+)\s*([^=\n]+?)\s*(==+)$', r'\1 \2 \3', text, flags=re.MULTILINE)
     text = re.sub(r'«\s*(.*?)\s*»', r'{{"|\1}}', text)
-    return text*
+    return text
 
 def fix_text_nodes(code):
     for node in code.nodes:
