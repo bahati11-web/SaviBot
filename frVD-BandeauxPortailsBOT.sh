@@ -1,4 +1,4 @@
-#!/bin/bash
+# Script pour https://fr.vikidia.org/ permentant d'ajouter des portails sur les pages d'une catégorie.
 
 lang="fr"
 family="vikidia"
